@@ -4,8 +4,8 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 
-import base64
-import string
+import base64 # used to decode base64url encoded email body
+import string # used to remove punctuation from date string
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
