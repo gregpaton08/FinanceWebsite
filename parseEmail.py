@@ -29,4 +29,12 @@ for message in messages:
     # print the body of the email
     body_data = data['payload']['body'].get('data', None)
     if body_data:
-        print(base64.urlsafe_b64decode(body_data.encode('ascii')))
+        body_text = base64.urlsafe_b64decode(body_data.encode('ascii'))
+        
+        # save as html file
+        with open('temp.html', 'w') as html_file:
+            html_file.write(body_text)
+        
+        body_lines = body_text.split('<br />')
+        for line in body_lines:
+            print(line.lstrip())
