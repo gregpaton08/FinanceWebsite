@@ -19,6 +19,7 @@ if not credentials or credentials.invalid:
 
 GMAIL = build('gmail', 'v1', http=credentials.authorize(Http()))
 
+# todo: update query to only check for emails with a date after the last time the script was called
 messages = GMAIL.users().messages().list(userId='me', q='from:myaccount@pseg.com').execute().get('messages', [])
 for message in messages:
     data = GMAIL.users().messages().get(userId='me', id=message['id']).execute()
@@ -51,10 +52,9 @@ for message in messages:
                     date = date.translate(None, string.punctuation)
                 break
         
-        print('Balance: ' + balance)
-        print('Date:    ' + date)
-        
         # parse the date into a datetime object and decrement the month to get the correct billing cycle
         billing_cycle_date = datetime.datetime.strptime(date, '%B %d %Y').date().replace(day=1)
         billing_cycle_date = billing_cycle_date + datetime.timedelta(days=-1)
+        
+        print('Balance: ' + balance)
         print(billing_cycle_date)
