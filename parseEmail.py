@@ -5,6 +5,7 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 
 import base64
+import string
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
@@ -35,6 +36,19 @@ for message in messages:
         with open('temp.html', 'w') as html_file:
             html_file.write(body_text)
         
+        balance = ''
+        date = None
+        balance_search_token = 'current balance of $'
+        date_search_token = 'is due on '
         body_lines = body_text.split('<br />')
         for line in body_lines:
-            print(line.lstrip())
+            if balance_search_token in line:
+                balance = line[line.find(balance_search_token) + len(balance_search_token):]
+                balance = balance[:balance.find(' ')]
+                if date_search_token in line:
+                    date = line[line.find(date_search_token) + len(date_search_token):]
+                    date = date.translate(None, string.punctuation)
+                break
+        
+        print('Balance: ' + balance)
+        print('Date:    ' + date)
