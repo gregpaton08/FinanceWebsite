@@ -38,16 +38,16 @@ for message in messages:
             html_file.write(body_text)
         
         balance = ''
-        date = None
         balance_search_token = 'current balance of $'
-        date_search_token = 'is due on '
+        due_date = None
+        due_date_search_token = 'is due on '
         body_lines = body_text.split('<br />')
         for line in body_lines:
             if balance_search_token in line:
                 balance = line[line.find(balance_search_token) + len(balance_search_token):]
                 balance = balance[:balance.find(' ')]
-                if date_search_token in line:
-                    date = line[line.find(date_search_token) + len(date_search_token):]
+                if due_date_search_token in line:
+                    date = line[line.find(due_date_search_token) + len(due_date_search_token):]
                     date = date.translate(None, string.punctuation)
                 break
         
@@ -55,7 +55,6 @@ for message in messages:
         print('Date:    ' + date)
         
         # parse the date into a datetime object and decrement the month to get the correct billing cycle
-        date_object = datetime.datetime.strptime(date, '%B %d %Y').date()
-        date_object = date_object.replace(day=1)
-        date_object = date_object + datetime.timedelta(days=-1)
-        print(date_object)
+        billing_cycle_date = datetime.datetime.strptime(date, '%B %d %Y').date().replace(day=1)
+        billing_cycle_date = billing_cycle_date + datetime.timedelta(days=-1)
+        print(billing_cycle_date)
