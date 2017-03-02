@@ -4,8 +4,9 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 
-import base64 # used to decode base64url encoded email body
-import string # used to remove punctuation from date string
+import base64   # used to decode base64url encoded email body
+import string   # used to remove punctuation from date string
+import datetime # used to parse bill due date
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
@@ -52,3 +53,9 @@ for message in messages:
         
         print('Balance: ' + balance)
         print('Date:    ' + date)
+        
+        # parse the date into a datetime object and decrement the month to get the correct billing cycle
+        date_object = datetime.datetime.strptime(date, '%B %d %Y').date()
+        date_object = date_object.replace(day=1)
+        date_object = date_object + datetime.timedelta(days=-1)
+        print(date_object)
