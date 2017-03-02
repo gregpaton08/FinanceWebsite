@@ -27,7 +27,6 @@ for message in messages:
             print(header['value'])
             
     # print the body of the email
-    body = data['payload']['body']
-    body_data = body.get('data', None)
+    body_data = data['payload']['body'].get('data', None)
     if body_data:
-        print(base64.urlsafe_b64decode(body_data.encode('ascii') + '==='))
+        print(base64.urlsafe_b64decode(body_data.encode('ascii')))
