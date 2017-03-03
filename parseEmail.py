@@ -23,20 +23,11 @@ GMAIL = build('gmail', 'v1', http=credentials.authorize(Http()))
 messages = GMAIL.users().messages().list(userId='me', q='from:myaccount@pseg.com').execute().get('messages', [])
 for message in messages:
     data = GMAIL.users().messages().get(userId='me', id=message['id']).execute()
-    
-    # print the subject of the email
-    for header in data['payload']['headers']:
-        if header['name'] == 'Subject':
-            print(header['value'])
             
     # print the body of the email
     body_data = data['payload']['body'].get('data', None)
     if body_data:
         body_text = base64.urlsafe_b64decode(body_data.encode('ascii'))
-        
-        # save as html file
-        with open('temp.html', 'w') as html_file:
-            html_file.write(body_text)
         
         balance = ''
         balance_search_token = 'current balance of $'
