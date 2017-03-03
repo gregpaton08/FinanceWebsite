@@ -44,8 +44,7 @@ for message in messages:
                 break
         
         # parse the date into a datetime object and decrement the month to get the correct billing cycle
-        billing_cycle_date = datetime.datetime.strptime(date, '%B %d %Y').date().replace(day=1)
-        billing_cycle_date = billing_cycle_date + datetime.timedelta(days=-1)
+        billing_cycle_date = datetime.datetime.strptime(date, '%B %d %Y').date().replace(day=1) + datetime.timedelta(days=-1)
         
         print('Balance: ' + balance)
         print(billing_cycle_date)
