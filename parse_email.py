@@ -80,40 +80,32 @@ def parse_citi_message(message_body):
 
     tree = html.fromstring(message_body)
 
-    query = '//node()[contains(., "Statement Date")]/following-sibling::node()/text()'
-    results = tree.xpath(query)
-    statement_date = results[0]
-    print(statement_date)
-
     query = '//node()[contains(., "Statement Balance")]/following-sibling::node()/text()'
     results = tree.xpath(query)
-    statement_balance = results[0]
-    print(statement_balance)
+    balance = results[0].encode('ascii', 'ignore')
+    balance = float(balance.replace('$', '').replace(',', ''))
 
-    # body_text.replace('<br />', '\n')
+    query = '//node()[contains(., "Payment Due Date")]/following-sibling::node()/text()'
+    results = tree.xpath(query)
+    due_date = results[0].encode('ascii', 'ignore')
+    due_date = datetime.datetime.strptime(due_date, '%m/%d/%y').date()
 
-    # body_lines = body_text.split('\n')
+    query = '//node()[contains(., "Statement Date")]/following-sibling::node()/text()'
+    results = tree.xpath(query)
+    billing_cycle_date = results[0].encode('ascii', 'ignore')
+    billing_cycle_date = datetime.datetime.strptime(billing_cycle_date, '%m/%d/%y').date()
 
-    # print(len(body_lines))
-
-    # balance = 0.0
-    # for line in body_lines:
-    #     if 'Statement Balance: ' in line:
-    #         balance = line[line.rfind('$') + 1:]
-    #         balance = balance[:balance.find('<')]
-    #         print(balance)
-
-    # billing_cycle = None
-    # for line in body_lines:
-    #     print(line)
-    #     if 'Statement' in line:
-    #         print(line)
-
-    return None
+    return {
+        'account' : 'Citi',
+        'balance' : balance,
+        'due_date' : due_date,
+        'billing_cycle' : billing_cycle_date,
+        'paid_date' : None
+    }
 
 def print_bill_info(bill_info):
     print('Account:       ' + bill_info['account'])
-    print('Balance:       ' + bill_info['balance'])
+    print('Balance:       ' + str(bill_info['balance']))
     print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%B %Y'))
     print('Due date:      ' + bill_info['due_date'].strftime('%d %B %Y'))
 
@@ -147,4 +139,4 @@ for message_id in message_ids:
     bill_info = parse_citi_message(body_text)
     
     # bill_info = parse_pseg_message(body_text)
-    # print_bill_info(bill_info)
+    print_bill_info(bill_info)
