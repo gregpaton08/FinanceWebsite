@@ -18,6 +18,10 @@ def get_credentials():
         credentials = tools.run_flow(flow, store)
     return credentials
 
+def get_gmail_service(credentials=None):
+    if not credentials:
+        credentials = get_credentials()
+    return build('gmail', 'v1', http=credentials.authorize(Http()))
 
 def get_subject_for_message(message):
     return next((header for header in message['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
@@ -58,9 +62,7 @@ def parse_pseg_message(message_body):
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
 
-credentials = get_credentials()
-
-GMAIL = build('gmail', 'v1', http=credentials.authorize(Http()))
+gmail_service = get_gmail_service()
 
 query_terms = {
     'from:' : 'myaccount@pseg.com'
@@ -72,9 +74,9 @@ for key, val in query_terms.iteritems():
 
 # todo: update query to only check for emails with a date after the last time the script was called
 # Get a list of the message IDs using the list() method. Still need to get the message using the get() method and passing the ID.
-message_ids = GMAIL.users().messages().list(userId='me', q=query).execute().get('messages', [])
+message_ids = gmail_service.users().messages().list(userId='me', q=query).execute().get('messages', [])
 for message_id in message_ids:
-    message = GMAIL.users().messages().get(userId='me', id=message_id['id']).execute()
+    message = gmail_service.users().messages().get(userId='me', id=message_id['id']).execute()
 
     subject = get_subject_for_message(message)
 
