@@ -80,7 +80,7 @@ def parse_citi_message(message_body):
 
     tree = html.fromstring(message_body)
 
-    query = '//td[text()[contains(., "Statement Date")]]/child::node()[contains(., "State")]'
+    query = '//td[text()[contains(., "Statement Date")]]/child::node()[contains(., "Statement Date")]/following-sibling::node()[1]'
     # query = '//td[text()[contains(., "Statement Date")]]/text()[2]/following-sibling::text()[1]'
     # query = '//child::text()[contains(., "Statement Date")]/'
     # query = '//*[text()[contains(., "Statement")]]/child::text()[contains(., "Statement")]'
@@ -100,8 +100,8 @@ def parse_citi_message(message_body):
     for result in results:
         print('===============')
         print(type(result))
-        print(result.encode('ascii', 'ignore'))
-        # print(result.text_content())
+        # print(result.encode('ascii', 'ignore'))
+        print(result.text_content())
         # print(result)
 
     # body_text.replace('<br />', '\n')
