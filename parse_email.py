@@ -19,8 +19,16 @@ if not credentials or credentials.invalid:
 
 GMAIL = build('gmail', 'v1', http=credentials.authorize(Http()))
 
+query_terms = {
+    'from:' : 'myaccount@pseg.com'
+}
+
+query = ''
+for key, val in query_terms.iteritems():
+    query += key + val + ' '
+
 # todo: update query to only check for emails with a date after the last time the script was called
-messages = GMAIL.users().messages().list(userId='me', q='from:myaccount@pseg.com').execute().get('messages', [])
+messages = GMAIL.users().messages().list(userId='me', q=query).execute().get('messages', [])
 for message in messages:
     data = GMAIL.users().messages().get(userId='me', id=message['id']).execute()
             
