@@ -4,10 +4,10 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 
-import base64   # used to decode base64url encoded email body
-import string   # used to remove punctuation from date string
-import datetime # used to parse bill due date
-from lxml import html
+import base64           # used to decode base64url encoded email body
+import string           # used to remove punctuation from date string
+import datetime         # used to parse bill due date
+from lxml import html   # used to parse HTML email messages
 
 
 def get_credentials():
