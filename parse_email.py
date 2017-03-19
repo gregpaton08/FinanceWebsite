@@ -10,6 +10,9 @@ import datetime # used to parse bill due date
 
 
 def get_credentials():
+    SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
+    CLIENT_SECRET = 'client_id.json'
+
     # Retrieve credential from file.
     store = file.Storage('storage.json')
     credentials = store.get()
@@ -63,9 +66,6 @@ def print_bill_info(bill_info):
     print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%B %Y'))
     print('Due date:      ' + bill_info['due_date'].strftime('%d %B %Y'))
 
-
-SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
-CLIENT_SECRET = 'client_id.json'
 
 gmail_service = get_gmail_service()
 
