@@ -9,6 +9,16 @@ import string   # used to remove punctuation from date string
 import datetime # used to parse bill due date
 
 
+def get_credentials():
+    # Retrieve credential from file.
+    store = file.Storage('storage.json')
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET, SCOPES)
+        credentials = tools.run_flow(flow, store)
+    return credentials
+
+
 def get_subject_for_message(message):
     return next((header for header in message['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
 
@@ -48,11 +58,7 @@ def parse_pseg_message(message_body):
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
 
-store = file.Storage('storage.json')
-credentials = store.get()
-if not credentials or credentials.invalid:
-    flow = client.flow_from_clientsecrets(CLIENT_SECRET, SCOPES)
-    credentials = tools.run_flow(flow, store)
+credentials = get_credentials()
 
 GMAIL = build('gmail', 'v1', http=credentials.authorize(Http()))
 
