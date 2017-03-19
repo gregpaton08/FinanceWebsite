@@ -1,8 +1,10 @@
 Goals:
 List Expenses:
     Bills:
+        Info to store (CSV for now?):
+            Account name, balance, due date, date paid, billing cycle
         credit cards (from email)
-        utilities (from email and user input for water/sewage)
+        utilities (from email and user input for water/sewage) (extend to show electric/gas usage?)
         student loans (from email)
         mortgage (from email) (with current equity?)
         home insurance (?)
