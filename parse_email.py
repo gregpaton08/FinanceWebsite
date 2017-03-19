@@ -10,7 +10,10 @@ import datetime # used to parse bill due date
 
 
 def get_subject_for_message(message):
-    return next((header for header in data['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
+    return next((header for header in message['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
+
+# def get_body_for_message(message):
+#     body_data = message
 
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
@@ -33,14 +36,15 @@ for key, val in query_terms.iteritems():
     query += key + val + ' '
 
 # todo: update query to only check for emails with a date after the last time the script was called
-messages = GMAIL.users().messages().list(userId='me', q=query).execute().get('messages', [])
-for message in messages:
-    data = GMAIL.users().messages().get(userId='me', id=message['id']).execute()
+# Get a list of the message IDs using the list() method. Still need to get the message using the get() method and passing the ID.
+message_ids = GMAIL.users().messages().list(userId='me', q=query).execute().get('messages', [])
+for message_id in message_ids:
+    message = GMAIL.users().messages().get(userId='me', id=message_id['id']).execute()
 
     print(get_subject_for_message(message))
 
     # print the body of the email
-    body_data = data['payload']['body'].get('data', None)
+    body_data = message['payload']['body'].get('data', None)
     if body_data:
         body_text = base64.urlsafe_b64decode(body_data.encode('ascii'))
         
