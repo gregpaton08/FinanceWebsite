@@ -58,9 +58,10 @@ def parse_pseg_message(message_body):
     }
 
 def print_bill_info(bill_info):
-    print('Balance: ' + bill_info['balance'])
+    print('Account:       ' + bill_info['account'])
+    print('Balance:       ' + bill_info['balance'])
     print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%B %Y'))
-    print('Due date: ' + bill_info['due_date'].strftime('%d %B %Y'))
+    print('Due date:      ' + bill_info['due_date'].strftime('%d %B %Y'))
 
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
