@@ -32,12 +32,11 @@ List (Approximate) Net Worth:
 
 
 Current Task:
-    Parse email for Citi CC monthly balance
+    Parse email for Amex CC monthly balance
 
 To do:
     Setup basic website on RPi to display information
     Parse email for Chase CC monthly balance
-    Parse email for Amex CC monthly balance
     Parse email for BOA CC monthly balance
     Parse email for Discover CC monthly balance
     Parse email for Amazon CC monthly balance
@@ -53,3 +52,4 @@ To do:
 
 Done:
     Parse email for PSE&G balance
+    Parse email for Citi CC monthly balance
