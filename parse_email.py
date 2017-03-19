@@ -7,6 +7,7 @@ from oauth2client import file, client, tools
 import base64   # used to decode base64url encoded email body
 import string   # used to remove punctuation from date string
 import datetime # used to parse bill due date
+import binascii
 
 
 def get_credentials():
@@ -31,7 +32,10 @@ def get_subject_for_message(message):
 
 def get_body_for_message(message):
     body_data = message['payload']['body'].get('data', '')
-    return base64.urlsafe_b64decode(body_data.encode('ascii'))
+    return base64.urlsafe_b64decode(body_data.encode('UTF8'))
+    # parts = message['payload']['parts']
+    # data = parts[0].get('body', {}).get('data', '')
+    # return base64.urlsafe_b64decode(data.encode('UTF8'))
 
 def parse_pseg_message(message_body):
     balance = ''
@@ -70,6 +74,7 @@ def print_bill_info(bill_info):
 gmail_service = get_gmail_service()
 
 query_terms = {
+    # 'from:' : 'alerts@citibank.com'
     'from:' : 'myaccount@pseg.com'
 }
 
@@ -88,5 +93,4 @@ for message_id in message_ids:
     body_text = get_body_for_message(message)
     
     bill_info = parse_pseg_message(body_text)
-    
     print_bill_info(bill_info)
