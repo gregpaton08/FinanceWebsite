@@ -1,0 +1,53 @@
+Goals:
+List Expenses:
+    Bills:
+        credit cards (from email)
+        utilities (from email and user input for water/sewage)
+        student loans (from email)
+        mortgage (from email) (with current equity?)
+        home insurance (?)
+        car insurance (?)
+        car loan (?)
+    User entered expenses from receipts:
+        gas
+        food
+        home improvement
+        misc.
+        automotive
+List Income:
+    Paycheck (from email? or hard coded?)
+List Stocks:
+    # shares (user input)
+    purchase price (user input)
+    current price (yahoo API)
+    lifetime gain % (computed)
+    lifetime gain in dollars (computed)
+List Account Balances:
+    savings (email? at least for deposits)
+    checking (email? or user input?)
+List (Approximate) Net Worth:
+    current net worth (computed)
+
+
+Current Task:
+    Parse email for Citi CC monthly balance
+
+To do:
+    Setup basic website on RPi to display information
+    Parse email for Chase CC monthly balance
+    Parse email for Amex CC monthly balance
+    Parse email for BOA CC monthly balance
+    Parse email for Discover CC monthly balance
+    Parse email for Amazon CC monthly balance
+    Parse email for student loan payment
+    Parse email for mortage payment
+    Parse email for car insurance payment
+    Create web interface to input user expenses
+    Setup email for direct deposit notice from work (if possible?)
+    Create web interface to enter stock details (CRUD)
+    Use yahoo API to get current stock prices
+    Parse email for Barclays savings account deposits
+    Setup Barclays to email account balance every month (?)
+
+Done:
+    Parse email for PSE&G balance
