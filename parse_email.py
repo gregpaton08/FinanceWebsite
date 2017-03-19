@@ -110,7 +110,6 @@ def print_bill_info(bill_info):
     print('Due date:      ' + bill_info['due_date'].strftime('%d %B %Y'))
 
 
-# gmail_service = get_gmail_service()
 
 query_terms = {
     'from:' : 'alerts@citibank.com'
@@ -123,6 +122,7 @@ for key, val in query_terms.iteritems():
 
 # todo: update query to only check for emails with a date after the last time the script was called
 # Get a list of the message IDs using the list() method. Still need to get the message using the get() method and passing the ID.
+# gmail_service = get_gmail_service()
 message_ids = [0]#gmail_service.users().messages().list(userId='me', q=query).execute().get('messages', [])
 for message_id in message_ids:
     # message = gmail_service.users().messages().get(userId='me', id=message_id['id']).execute()
@@ -132,11 +132,8 @@ for message_id in message_ids:
     body_text = ''#get_body_for_message(message)
     with open('citi.html', 'r') as file:
         body_text = file.read();
-    # with open('citi.html', 'w') as file:
-    #     file.write(body_text)
-    # print(body_text)
 
     bill_info = parse_citi_message(body_text)
+    print_bill_info(bill_info)
     
     # bill_info = parse_pseg_message(body_text)
-    print_bill_info(bill_info)
