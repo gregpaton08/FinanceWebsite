@@ -33,10 +33,16 @@ def get_subject_for_message(message):
 def get_body_for_message(message):
     body_data = message['payload']['body'].get('data', '')
     if len(body_data) == 0:
+        # If the body is empty the email may have been sent in parts: html, plain text, etc.
         parts = message['payload']['parts']
-        for part in parts:
-            body_data += part.get('body', {}).get('data', '')
-    return base64.urlsafe_b64decode(body_data.encode('UTF8'))
+        # Try to get the HTML part if available.
+        part = next((part for part in parts if part['mimeType'] == 'text/html'), None)
+        # Otherwise just take the first part
+        if not part:
+            part = parts[0]
+
+        body_data = part.get('body', {}).get('data', '')
+    return base64.urlsafe_b64decode(body_data.encode('utf-8'))
 
 def parse_pseg_message(message_body):
     balance = ''
@@ -64,6 +70,29 @@ def parse_pseg_message(message_body):
         'billing_cycle' : billing_cycle_date,
         'paid_date' : None
     }
+
+def parse_citi_message(message_body):
+    # print(message_body)
+    # Verify that this email contains statement information.
+    body_search_term = 'statement'
+    if not body_search_term in message_body.lower():
+        return None
+
+    body_lines = body_text.split('\n')
+
+    # balance = 0.0
+    # for line in body_lines:
+    #     if 'Statement Balance: ' in line:
+    #         balance = float(line[line.rfind('$') + 1:])
+    #         print(balance)
+
+    # billing_cycle = None
+    # for line in body_lines:
+    #     print(line)
+    #     if 'Statement' in line:
+    #         print(line)
+
+    return None
 
 def print_bill_info(bill_info):
     print('Account:       ' + bill_info['account'])
@@ -93,6 +122,8 @@ for message_id in message_ids:
 
     body_text = get_body_for_message(message)
     print(body_text)
+
+    bill_info = parse_citi_message(body_text)
     
     # bill_info = parse_pseg_message(body_text)
     # print_bill_info(bill_info)
