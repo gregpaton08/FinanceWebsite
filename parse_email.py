@@ -16,6 +16,33 @@ def get_body_for_message(message):
     body_data = message['payload']['body'].get('data', '')
     return base64.urlsafe_b64decode(body_data.encode('ascii'))
 
+def parse_pseg_message(message_body):
+    balance = ''
+    balance_search_token = 'current balance of $'
+    due_date = None
+    due_date_search_token = 'is due on '
+    body_lines = body_text.split('<br />')
+    for line in body_lines:
+        if balance_search_token in line:
+            balance = line[line.find(balance_search_token) + len(balance_search_token):]
+            balance = balance[:balance.find(' ')]
+            if due_date_search_token in line:
+                due_date = line[line.find(due_date_search_token) + len(due_date_search_token):]
+                due_date = due_date.translate(None, string.punctuation)
+            break
+    
+    # parse the date into a datetime object and decrement the month to get the correct billing cycle
+    billing_cycle_date = datetime.datetime.strptime(due_date, '%B %d %Y').date().replace(day=1) + datetime.timedelta(days=-1)
+
+    return {
+        'account' : 'PSE&G',
+        'balance' : balance,
+        'due_date' : due_date,
+        'billing_cycle' : billing_cycle_date,
+        'paid_date' : None
+    }
+
+
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
@@ -46,24 +73,10 @@ for message_id in message_ids:
 
     body_text = get_body_for_message(message)
     
-    balance = ''
-    balance_search_token = 'current balance of $'
-    due_date = None
-    due_date_search_token = 'is due on '
-    body_lines = body_text.split('<br />')
-    for line in body_lines:
-        if balance_search_token in line:
-            balance = line[line.find(balance_search_token) + len(balance_search_token):]
-            balance = balance[:balance.find(' ')]
-            if due_date_search_token in line:
-                date = line[line.find(due_date_search_token) + len(due_date_search_token):]
-                date = date.translate(None, string.punctuation)
-            break
-    
-    # parse the date into a datetime object and decrement the month to get the correct billing cycle
-    billing_cycle_date = datetime.datetime.strptime(date, '%B %d %Y').date().replace(day=1) + datetime.timedelta(days=-1)
+    bill_info = parse_pseg_message(body_text)
     
 
     print(subject)
-    print('Balance: ' + balance)
-    print(billing_cycle_date)
+    print('Balance: ' + bill_info['balance'])
+    print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%d %B %Y'))
+    print('Due date: ' + bill_info['due_date'])
