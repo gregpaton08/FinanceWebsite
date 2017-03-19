@@ -31,8 +31,9 @@ def parse_pseg_message(message_body):
                 due_date = due_date.translate(None, string.punctuation)
             break
     
+    due_date = datetime.datetime.strptime(due_date, '%B %d %Y').date()
     # parse the date into a datetime object and decrement the month to get the correct billing cycle
-    billing_cycle_date = datetime.datetime.strptime(due_date, '%B %d %Y').date().replace(day=1) + datetime.timedelta(days=-1)
+    billing_cycle_date = due_date.replace(day=1) + datetime.timedelta(days=-1)
 
     return {
         'account' : 'PSE&G',
@@ -78,5 +79,5 @@ for message_id in message_ids:
 
     print(subject)
     print('Balance: ' + bill_info['balance'])
-    print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%d %B %Y'))
-    print('Due date: ' + bill_info['due_date'])
+    print('Billing cycle: ' + bill_info['billing_cycle'].strftime('%B %Y'))
+    print('Due date: ' + bill_info['due_date'].strftime('%d %B %Y'))
