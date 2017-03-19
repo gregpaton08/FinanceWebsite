@@ -8,6 +8,11 @@ import base64   # used to decode base64url encoded email body
 import string   # used to remove punctuation from date string
 import datetime # used to parse bill due date
 
+
+def get_subject_for_message(message):
+    return next((header for header in data['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
+
+
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 CLIENT_SECRET = 'client_id.json'
 
@@ -31,7 +36,9 @@ for key, val in query_terms.iteritems():
 messages = GMAIL.users().messages().list(userId='me', q=query).execute().get('messages', [])
 for message in messages:
     data = GMAIL.users().messages().get(userId='me', id=message['id']).execute()
-            
+
+    print(get_subject_for_message(message))
+
     # print the body of the email
     body_data = data['payload']['body'].get('data', None)
     if body_data:
