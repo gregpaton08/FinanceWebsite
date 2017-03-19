@@ -31,11 +31,13 @@ def get_subject_for_message(message):
     return next((header for header in message['payload']['headers'] if header.get('name', '') == 'Subject'), {} ).get('value', 'email has not subject')
 
 def get_body_for_message(message):
-    body_data = message['payload']['body'].get('data', '')
+    # body_data = message['payload']['body'].get('data', '')
+    # return base64.urlsafe_b64decode(body_data.encode('UTF8'))
+    body_data = ''
+    parts = message['payload']['parts']
+    for part in parts:
+        body_data += part.get('body', {}).get('data', '')
     return base64.urlsafe_b64decode(body_data.encode('UTF8'))
-    # parts = message['payload']['parts']
-    # data = parts[0].get('body', {}).get('data', '')
-    # return base64.urlsafe_b64decode(data.encode('UTF8'))
 
 def parse_pseg_message(message_body):
     balance = ''
@@ -74,8 +76,8 @@ def print_bill_info(bill_info):
 gmail_service = get_gmail_service()
 
 query_terms = {
-    # 'from:' : 'alerts@citibank.com'
-    'from:' : 'myaccount@pseg.com'
+    'from:' : 'alerts@citibank.com'
+    # 'from:' : 'myaccount@pseg.com'
 }
 
 query = ''
@@ -91,6 +93,7 @@ for message_id in message_ids:
     subject = get_subject_for_message(message)
 
     body_text = get_body_for_message(message)
+    print(body_text)
     
-    bill_info = parse_pseg_message(body_text)
-    print_bill_info(bill_info)
+    # bill_info = parse_pseg_message(body_text)
+    # print_bill_info(bill_info)
