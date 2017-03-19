@@ -80,29 +80,15 @@ def parse_citi_message(message_body):
 
     tree = html.fromstring(message_body)
 
-    query = '//td[text()[contains(., "Statement Date")]]/child::node()[contains(., "Statement Date")]/following-sibling::node()[1]'
-    # query = '//td[text()[contains(., "Statement Date")]]/text()[2]/following-sibling::text()[1]'
-    # query = '//child::text()[contains(., "Statement Date")]/'
-    # query = '//*[text()[contains(., "Statement")]]/child::text()[contains(., "Statement")]'
-    # query = '//td[contains(text(), "Statement")]'
-    # query = '//td[text()[contains(., "Statement Date")]]/text()'
-    # query = '//td[text()[contains(., "Statement Date")]]'
-    # query = '//td/text()[contains(., "Statement Date")]'
-    # query = '//[text()[contains(., "Statement Date")]]/text()'
-    # query = '//td/b[contains(text(), "Double Cash Card")]/../child::text()'
-    # query = '//td/*[contains(text(), "State")]/text()'
-    # query = '//td[contains(text(), "lease")]/text()'
-    # query = '//td[contains(text(), "Statement Balance:")]/text()'
-    # result = tree.xpath(query)[0].encode('ascii', 'ignore')
-    # print(result)
+    query = '//node()[contains(., "Statement Date")]/following-sibling::node()/text()'
     results = tree.xpath(query)
-    print(len(results))
-    for result in results:
-        print('===============')
-        print(type(result))
-        # print(result.encode('ascii', 'ignore'))
-        print(result.text_content())
-        # print(result)
+    statement_date = results[0]
+    print(statement_date)
+
+    query = '//node()[contains(., "Statement Balance")]/following-sibling::node()/text()'
+    results = tree.xpath(query)
+    statement_balance = results[0]
+    print(statement_balance)
 
     # body_text.replace('<br />', '\n')
 
