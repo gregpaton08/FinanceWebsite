@@ -80,7 +80,9 @@ def parse_citi_message(message_body):
 
     tree = html.fromstring(message_body)
 
-    query = '//*[text()[contains(., "Statement")]]/child::text()[contains(., "Statement")]'
+    query = '//*[text()[contains(., "Statement Date")]]/text()[1]/following-sibling::text()[1]'
+    # query = '//child::text()[contains(., "Statement Date")]/'
+    # query = '//*[text()[contains(., "Statement")]]/child::text()[contains(., "Statement")]'
     # query = '//td[contains(text(), "Statement")]'
     # query = '//td[text()[contains(., "Statement Date")]]/text()'
     # query = '//td[text()[contains(., "Statement Date")]]'
