@@ -7,7 +7,7 @@ from oauth2client import file, client, tools
 import base64   # used to decode base64url encoded email body
 import string   # used to remove punctuation from date string
 import datetime # used to parse bill due date
-import binascii
+from lxml import html
 
 
 def get_credentials():
@@ -78,12 +78,34 @@ def parse_citi_message(message_body):
     if not body_search_term in message_body.lower():
         return None
 
-    body_lines = body_text.split('\n')
+    tree = html.fromstring(message_body)
+
+    query = '//td/text()[contains(., "Statement Date")]'
+    # query = '//[text()[contains(., "Statement Date")]]/text()'
+    # query = '//td/b[contains(text(), "Double Cash Card")]/../child::text()'
+    # query = '//td/*[contains(text(), "State")]/text()'
+    # query = '//td[contains(text(), "lease")]/text()'
+    # query = '//td[contains(text(), "Statement Balance:")]/text()'
+    # result = tree.xpath(query)[0].encode('ascii', 'ignore')
+    # print(result)
+    results = tree.xpath(query)
+    print(len(results))
+    for result in results:
+        print('===============')
+        print(result.encode('ascii', 'ignore'))
+        # print(result.text_content())
+
+    # body_text.replace('<br />', '\n')
+
+    # body_lines = body_text.split('\n')
+
+    # print(len(body_lines))
 
     # balance = 0.0
     # for line in body_lines:
     #     if 'Statement Balance: ' in line:
-    #         balance = float(line[line.rfind('$') + 1:])
+    #         balance = line[line.rfind('$') + 1:]
+    #         balance = balance[:balance.find('<')]
     #         print(balance)
 
     # billing_cycle = None
@@ -101,7 +123,7 @@ def print_bill_info(bill_info):
     print('Due date:      ' + bill_info['due_date'].strftime('%d %B %Y'))
 
 
-gmail_service = get_gmail_service()
+# gmail_service = get_gmail_service()
 
 query_terms = {
     'from:' : 'alerts@citibank.com'
@@ -114,14 +136,18 @@ for key, val in query_terms.iteritems():
 
 # todo: update query to only check for emails with a date after the last time the script was called
 # Get a list of the message IDs using the list() method. Still need to get the message using the get() method and passing the ID.
-message_ids = gmail_service.users().messages().list(userId='me', q=query).execute().get('messages', [])
+message_ids = [0]#gmail_service.users().messages().list(userId='me', q=query).execute().get('messages', [])
 for message_id in message_ids:
-    message = gmail_service.users().messages().get(userId='me', id=message_id['id']).execute()
+    # message = gmail_service.users().messages().get(userId='me', id=message_id['id']).execute()
 
-    subject = get_subject_for_message(message)
+    # subject = get_subject_for_message(message)
 
-    body_text = get_body_for_message(message)
-    print(body_text)
+    body_text = ''#get_body_for_message(message)
+    with open('citi.html', 'r') as file:
+        body_text = file.read();
+    # with open('citi.html', 'w') as file:
+    #     file.write(body_text)
+    # print(body_text)
 
     bill_info = parse_citi_message(body_text)
     
