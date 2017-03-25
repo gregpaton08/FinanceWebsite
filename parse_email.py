@@ -124,7 +124,7 @@ def parse_amex_message(message_body):
 
 
 
-    query = '//td[child::text()[contains(., "Payment Due Date:")]]'
+    query = '//td[text()[contains(., "Payment Due Date:")]]'
     results = tree.xpath(query)
     print(len(results))
     print(results[0].text_content())
